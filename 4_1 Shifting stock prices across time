@@ -1,0 +1,84 @@
+Exercise
+Shifting stock prices across time
+The first method to manipulate time series that you saw in the video was .shift(), which allows you shift all values in a Series or DataFrame by a number of periods to a different time along the DateTimeIndex.
+
+Let's use this to visually compare a stock price series for Google shifted 90 business days into both past and future.
+
+Instructions 100 XP
+We have already imported pandas as pd and matplotlib.pyplot as plt.
+Use pd.read_csv() to import 'google.csv', parsing the 'Date' as dates, setting the result as index and assigning to google.
+Use .asfreq() to set the frequency of google to business daily.
+Add new columns lagged and shifted to google that contain the Close shifted by 90 business days into past and future, respectively.
+Plot the three columns of google.
+
+import pandas as pd
+
+# Import data here
+google = pd.read_csv('google.csv', parse_dates=['Date'], index_col='Date')
+
+# Set data frequency to business daily
+google = google.asfreq('B')
+
+# Create 'lagged' and 'shifted'
+google['lagged'] = google.Close.shift(periods=-90)
+google['shifted'] = google.Close.shift(periods=90)
+
+# Plot the google price series
+google.plot()
+plt.show()
+
+
+Exercise
+Calculating stock price changes
+You have learned in the video how to calculate returns using current and shifted prices as input. Now you'll practice a similar calculation to calculate absolute changes from current and shifted prices, and compare the result to the function .diff().
+
+Instructions
+100 XP
+We have already imported pandas as pd and matplotlib.pyplot as plt. We have also loaded Yahoo stock prices for the years 2013 to 2015, set the frequency to business daily, and assigned the result to yahoo.
+
+Create a new column called shifted_30 that contains the 'price' shifted by 30 business days into the future.
+Subtract 'shifted_30' from 'price', and assign the result to a new column, 'change_30'.
+Apply .diff(), setting periods to 30, and assign the result to a new column, 'diff_30'.
+Inspect the last five rows of yahoo to verify the calculation.
+Subtract diff_30 from change_30 using the .sub() method and print the .value_counts() of the result to show both columns are equal.
+
+# Created shifted_30 here
+yahoo['shifted_30'] = yahoo.price.shift(30)
+
+# Subtract shifted_30 from price
+yahoo['change_30'] = yahoo.price.sub(yahoo.shifted_30)
+
+# Get the 30-day price difference
+yahoo['diff_30'] = yahoo.price.diff(30)
+
+# Inspect the last five rows of price
+print(yahoo.tail())
+
+# Show the value_counts of the difference between change_30 and diff_30
+print(yahoo.change_30.sub(yahoo.diff_30).value_counts())
+
+Exercise
+Plotting multi-period returns
+The last time series method you have learned about in the video was .pct_change(). Let's use this function to calculate returns for various calendar day periods, and plot the result to compare the different patterns.
+
+We'll be using Google stock prices from 2014-2016.
+
+Instructions
+100 XP
+We have already imported pandas as pd, and matplotlib.pyplot as plt. We have also loaded 'GOOG' stock prices for the years 2014-2016, set the frequency to calendar daily, and assigned the result to google.
+
+Create the columns 'daily_return', 'monthly_return', and 'annual_return' that contain the pct_change() of 'Close' for 1, 30 and 360 calendar days, respectively, and multiply each by 100.
+Plot the result using subplots=True.
+
+# Create daily_return
+google['daily_return'] = google.Close.pct_change(periods=1).mul(100)
+
+# Create monthly_return
+google['monthly_return'] = google.Close.pct_change(periods=30).mul(100)
+
+# Create annual_return
+google['annual_return'] = google.Close.pct_change(periods=360).mul(100)
+
+# Plot the result
+google.plot(subplots=True)
+plt.show()
